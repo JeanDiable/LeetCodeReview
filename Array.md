@@ -1,6 +1,6 @@
 # Array
 
-List：27,26,80,189,41,299,134,118,119,169,229,274,275,243,244,245,217,219,220,55,45,121,122,123,188,309,11,42,334,128,164,287,135,330,321,327,289,57,56,252,253,239,295,53,325,209,238,152,228,163,88,75,283,376,280,324,278,35
+List：~~27,26,80,189,41~~,299,134,118,119,169,229,274,275,243,244,245,217,219,220,55,45,121,122,123,188,309,11,42,334,128,164,287,135,330,321,327,289,57,56,252,253,239,295,53,325,209,238,152,228,163,88,75,283,376,280,324,278,35
 
 
 
@@ -167,13 +167,67 @@ this visualization help me figure it out :)
 
 
 
+## 41缺失的第一个正数
+
+给你一个未排序的整数数组 `nums` ，请你找出其中没有出现的最小的正整数。
+
+请你实现时间复杂度为 `O(n)` 并且只使用常数级别额外空间的解决方案。
 
 
 
+```c++
+class Solution {
+public:
+    int firstMissingPositive(vector<int>& nums) {
+        int n = nums.size();
+        for (int& num: nums){
+            if (num <=0) num = n + 1;
+        }
+        for (int i = 0; i<n; i++){
+            int num = abs(nums[i]);
+            if (num <= n){
+                nums[num-1] = -abs(nums[num-1]);
+            }
+        }
+        for (int i = 0; i< n; i++){
+            if (nums[i] > 0) return i+1;
+        }
+        return n+1;
+    }
+};
+```
+
+思路1：
+
+![image-20230619125658783](https://raw.githubusercontent.com/JeanDiable/MyGallery/main/img/image-20230619125658783.png)
 
 
 
+```c++
+class Solution {
+public:
+    int firstMissingPositive(vector<int>& nums) {
+        int n = nums.size();
+        for (int i = 0; i < n; i++){
+            while(nums[i] >0 && nums[i]<=n && nums[nums[i]-1] != nums[i]) {
+                swap(nums[nums[i]-1],nums[i]);
+            }
+        }
+        for(int i = 0; i < n; i++){
+            if (nums[i] != i+1)  return i+1;
+        }
+        return n+1;
+    }
+};
+```
 
+思路2：
+
+![image-20230619130423251](https://raw.githubusercontent.com/JeanDiable/MyGallery/main/img/image-20230619130423251.png)
+
+
+
+## 
 
 
 
