@@ -227,9 +227,74 @@ public:
 
 
 
-## 
+## 299猜数字游戏
+
+你在和朋友一起玩 [猜数字（Bulls and Cows）](https://baike.baidu.com/item/猜数字/83200?fromtitle=Bulls+and+Cows&fromid=12003488&fr=aladdin)游戏，该游戏规则如下：
+
+写出一个秘密数字，并请朋友猜这个数字是多少。朋友每猜测一次，你就会给他一个包含下述信息的提示：
+
+- 猜测数字中有多少位属于数字和确切位置都猜对了（称为 "Bulls"，公牛），
+- 有多少位属于数字猜对了但是位置不对（称为 "Cows"，奶牛）。也就是说，这次猜测中有多少位非公牛数字可以通过重新排列转换成公牛数字。
+
+给你一个秘密数字 `secret` 和朋友猜测的数字 `guess` ，请你返回对朋友这次猜测的提示。
+
+提示的格式为 `"xAyB"` ，`x` 是公牛个数， `y` 是奶牛个数，`A` 表示公牛，`B` 表示奶牛。
+
+请注意秘密数字和朋友猜测的数字都可能含有重复数字。
+
+```c++
+class Solution {
+public:
+    string getHint(string secret, string guess) {
+        int bulls = 0, cows = 0;
+        vector<int> cntS(10), cntG(10);
+        for (int i = 0; i< secret.length();i++){
+            if(secret[i]==guess[i]) {bulls++;}
+            else{
+                ++cntG[guess[i]-'0'];
+                ++cntS[secret[i]-'0'];
+            }
+        }
+        for (int i = 0; i<10;i++){
+            cows+= min(cntG[i],cntS[i]);
+        }
+        return to_string(bulls) + "A" + to_string(cows) + "B";
+    }
+};
+```
+
+思路：遍历查找完全一样的，统计bulls的个数。使用「哈希表」进行分别统计 secret 和 guess 的词频，某个数字 x 在两者词频中的较小值，即为该数字对应的奶牛数量，统计所有数字 [0,9] 的奶牛数量总和。
 
 
 
+## 134加油站
 
+在一条环路上有 `n` 个加油站，其中第 `i` 个加油站有汽油 `gas[i]` 升。
+
+你有一辆油箱容量无限的的汽车，从第 `i` 个加油站开往第 `i+1` 个加油站需要消耗汽油 `cost[i]` 升。你从其中的一个加油站出发，开始时油箱为空。
+
+给定两个整数数组 `gas` 和 `cost` ，如果你可以按顺序绕环路行驶一周，则返回出发时加油站的编号，否则返回 `-1` 。如果存在解，则 **保证** 它是 **唯一** 的。
+
+```c++
+class Solution {
+public:
+    int canCompleteCircuit(vector<int>& gas, vector<int>& cost) {
+        int sum = 0, tag = INT_MAX, ind = 0;;
+        int n = gas.size();
+        for (int i =0; i<n; i++){
+            sum += gas[i];
+            sum -= cost[i];
+            if (sum < tag) {
+                tag = sum;
+                ind = i;
+            }
+        }
+        if(sum < 0) return -1;
+        else if(tag >= 0) return 0;
+        else return (ind+1)%n;
+    }
+};
+```
+
+思路：寻找亏空最严重的那个加油站放到最后走，等其他人多余出来的救他，如果最后总加的油比消耗的少，那就是没有解。
 
