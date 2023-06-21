@@ -1,6 +1,6 @@
 # Array
 
-List：~~27,26,80,189,41~~,299,134,118,119,169,229,274,275,243,244,245,217,219,220,55,45,121,122,123,188,309,11,42,334,128,164,287,135,330,321,327,289,57,56,252,253,239,295,53,325,209,238,152,228,163,88,75,283,376,280,324,278,35
+List：~~27,26,80,189,41~~~~,299,134,~~118,119,169,229,274,275,243,244,245,217,219,220,55,45,121,122,123,188,309,11,42,334,128,164,287,135,330,321,327,289,57,56,252,253,239,295,53,325,209,238,152,228,163,88,75,283,376,280,324,278,35
 
 
 
@@ -298,3 +298,101 @@ public:
 
 思路：寻找亏空最严重的那个加油站放到最后走，等其他人多余出来的救他，如果最后总加的油比消耗的少，那就是没有解。
 
+
+
+## 118杨辉三角
+
+给定一个非负整数 *`numRows`，*生成「杨辉三角」的前 *`numRows`* 行。
+
+在「杨辉三角」中，每个数是它左上方和右上方的数的和。
+
+```c++
+class Solution {
+public:
+    vector<vector<int>> generate(int numRows) {
+        vector<vector<int>>res(numRows);
+        for(int i = 0; i < numRows; i++){
+            res[i].resize(i+1);
+            res[i][0] = res[i][i]=1;
+            for(int j = 1; j < i; j++){
+                res[i][j] = res[i-1][j-1]+res[i-1][j];
+            }
+        }
+        return res;
+    }
+};
+```
+
+思路：直接按照杨辉三角的性质构造即可。首尾单独设置成1即可。
+
+
+
+## 119杨辉三角2
+
+
+
+```c++
+class Solution {
+public:
+    vector<int> getRow(int rowIndex) {
+        vector<vector<int>>res(rowIndex+1);
+        for(int i = 0; i <= rowIndex; i++){
+            res[i].resize(i+1);
+            res[i][0] = res[i][i]=1;
+            for(int j = 1; j < i; j++){
+                res[i][j] = res[i-1][j-1]+res[i-1][j];
+            }
+        }
+        return res[rowIndex];
+    }
+};
+```
+
+思路：直接按照118的代码，最后提取最后一行即可。
+
+
+
+## 169多数元素
+
+给定一个大小为 `n` 的数组 `nums` ，返回其中的多数元素。多数元素是指在数组中出现次数 **大于** `⌊ n/2 ⌋` 的元素。
+
+你可以假设数组是非空的，并且给定的数组总是存在多数元素。
+
+```c++
+class Solution {
+public:
+    int majorityElement(vector<int>& nums) {
+        while(true){
+            int cand = nums[rand()%nums.size()];
+            int count = 0;
+            for (int num: nums){
+                if(num == cand){
+                    count++;
+                    if(count > nums.size()/2) return cand;
+                }
+            }
+        }
+        return -1;
+    }
+};
+```
+
+思路：因为众数数量大于一半，所以随机选取是众数的概率至少是0.5，所以随机选取n次取到众数的期望是2。加上每次选好众数candidate之后用循环去判断到底是不是众数的复杂度是O(n)。所以时间复杂度是n，空间复杂度是O(1)，没有开新的空间。
+
+
+
+```c++
+class Solution {
+public:
+    int majorityElement(vector<int>& nums) {
+        unordered_map<int,int> hash;
+        for(int num: nums){
+            hash[num]++;
+            if(hash[num] > nums.size()/2) return num;
+        }
+        return -1;
+    }
+};
+```
+
+思路：哈希表存储，时间复杂度O(n),空间复杂度也是O(n).
