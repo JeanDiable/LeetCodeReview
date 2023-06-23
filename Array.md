@@ -1,6 +1,6 @@
 # Array
 
-List：~~27,26,80,189,41,299,134,~~118,119,169,229,274,275,243,244,245,217,219,220,55,45,121,122,123,188,309,11,42,334,128,164,287,135,330,321,327,289,57,56,252,253,239,295,53,325,209,238,152,228,163,88,75,283,376,280,324,278,35
+List：~~27,26,80,189,41,299,134,118,119,169,229,~~274,275,243,244,245,217,219,220,55,45,121,122,123,188,309,11,42,334,128,164,287,135,330,321,327,289,57,56,252,253,239,295,53,325,209,238,152,228,163,88,75,283,376,280,324,278,35
 
 
 
@@ -396,3 +396,69 @@ public:
 ```
 
 思路：哈希表存储，时间复杂度O(n),空间复杂度也是O(n).
+
+
+
+## 229多数元素2
+
+给定一个大小为 *n* 的整数数组，找出其中所有出现超过 `⌊ n/3 ⌋` 次的元素。
+
+```c++
+class Solution {
+public:
+    vector<int> majorityElement(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> ans;
+        unordered_map<int,int>res;
+        for(int num: nums){
+            res[num]++;
+        }
+        for(auto& v: res){
+            if(v.second > n/3) ans.push_back(v.first);
+        }
+        return ans;
+    }
+};
+```
+
+思路1：哈希表存储，时间复杂度O(n),空间复杂度也是O(n).和上面几乎一样
+
+
+
+```c++
+class Solution {
+public:
+    vector<int> majorityElement(vector<int>& nums) {
+        int ele1 = 0, ele2 = 0, vote1 = 0, vote2 = 0;
+        vector<int> ans;
+
+        for(auto& num : nums){
+            if(vote1 > 0 && num == ele1){vote1++;} 
+            else  if(vote2 > 0 && num == ele2){vote2++;} 
+            else if (vote1 == 0) {
+                ele1 = num;
+                vote1++;
+            }else if(vote2 == 0){
+                ele2 = num;
+                vote2++;
+            }else{
+                vote1--;
+                vote2--;
+            }
+        }
+        
+        int cnt1 = 0, cnt2 = 0;
+        for(auto& num:nums){
+            if(vote1 > 0 && num == ele1) cnt1++;
+            if(vote2 > 0 && num == ele2) cnt2++;
+        }
+        if(vote1 > 0 && cnt1 > nums.size()/3) ans.push_back(ele1);
+        if(vote2 > 0 && cnt2 > nums.size()/3) ans.push_back(ele2);
+        return ans;
+    }
+};
+```
+
+思路2：摩尔投票法
+
+![image-20230623233527835](https://raw.githubusercontent.com/JeanDiable/MyGallery/main/img/image-20230623233527835.png)
