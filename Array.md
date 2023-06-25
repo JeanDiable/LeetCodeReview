@@ -1,6 +1,6 @@
 # Array
 
-List：~~27,26,80,189,41,299,134,118,119,169,229,~~274,275,243,244,245,217,219,220,55,45,121,122,123,188,309,11,42,334,128,164,287,135,330,321,327,289,57,56,252,253,239,295,53,325,209,238,152,228,163,88,75,283,376,280,324,278,35
+List：~~27,26,80,189,41,299,134,118,119,169,229,274,275~~,243,244,245,217,219,220,55,45,121,122,123,188,309,11,42,334,128,164,287,135,330,321,327,289,57,56,252,253,239,295,53,325,209,238,152,228,163,88,75,283,376,280,324,278,35
 
 
 
@@ -462,3 +462,79 @@ public:
 思路2：摩尔投票法
 
 ![image-20230623233527835](https://raw.githubusercontent.com/JeanDiable/MyGallery/main/img/image-20230623233527835.png)
+
+
+
+## 274 H指数
+
+给你一个整数数组 citations，其中 citations[i] 表示研究者的第 i篇论文被引用的次数。计算并返回该研究者的 h 指数。根据维基百科上 h指数的定义：h 代表”高引用次数”，一名科研人员的 h指数 是指他（她）至少发表了h 篇论文，并且每篇论文 至少被引用h次。如果h 有多种可能的值，h指数是其中最大的那个。
+
+```c++
+class Solution {
+public:
+    int hIndex(vector<int>& citations) {
+        sort(citations.begin(),citations.end());
+        int h = 0, i = citations.size()-1;
+        while(i >= 0 && citations[i] > h){
+            h++;
+            i--;
+        }
+        return h;
+    }
+};
+```
+
+思路1：首先我们可以将初始的H指数 h设为 0，然后将引用次数排序，并且对排序后的数组从大到小遍历。
+根据H指数的定义，如果当前H指数为H并且在遍历过程中找到当前值 citations[i]＞h，则说明我们找到了一篇被引用了至少n＋1次的论文，所以将现有的 h值加 1。继续遍历直到 ，无法继续增大。最后返回 h 作为最终答案。
+
+
+
+```c++
+class Solution {
+public:
+    int hIndex(vector<int>& citations) {
+        int n = citations.size(), ans = 0;
+        vector<int> count(n+1);
+        for(int i = 0; i < n; i++){
+            if(citations[i]>=n) count[n]++;
+            else count[citations[i]]++;
+        }
+        for (int i = n; i>= 0; i--){
+            ans += count[i];
+            if (ans >= i) return i;
+        }
+        return 0;
+    }
+};
+```
+
+思路2：计数排序，类似哈希。用一个count list来存储引用数量对应的论文数量。然后遍历这个count list，从高到低累加论文数量，直到论文数量超过某个引用数量的时候，那个引用数量就是对应的H指数。
+
+
+
+## 275 H指数2
+
+给你一个整数数组 citations，并已经按照 **升序排列**。其中 citations[i] 表示研究者的第 i篇论文被引用的次数。计算并返回该研究者的 h 指数。根据维基百科上 h指数的定义：h 代表”高引用次数”，一名科研人员的 h指数 是指他（她）至少发表了h 篇论文，并且每篇论文 至少被引用h次。如果h 有多种可能的值，h指数是其中最大的那个。
+
+```c++
+class Solution {
+public:
+    int hIndex(vector<int>& citations) {
+        int n = citations.size(), left = 0, right = n-1;
+        while(left <= right){
+            int mid = left + (right-left)/2;
+            if(citations[mid] >= n - citations[mid]){
+                right = mid - 1;
+            }else{
+                left = mid + 1;
+            }
+        }
+        return n-left;
+    }
+};
+```
+
+思路：既然已经排好序了直接二分查找呗。
+
+
+
